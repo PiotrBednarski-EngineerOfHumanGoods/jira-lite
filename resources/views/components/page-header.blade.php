@@ -1,8 +1,8 @@
 @props(['title', 'subtitle' => null])
-<div class="mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+<div class="mb-6 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
     <div>
-        <h1 class="text-2xl font-semibold text-gray-800">{{ $title }}</h1>
-        @if($subtitle)<p class="text-sm text-gray-500">{{ $subtitle }}</p>@endif
+        @if($subtitle)<span class="eyebrow mb-2">{{ $subtitle }}</span>@endif
+        <h1 class="text-3xl sm:text-4xl font-bold tracking-tight leading-none mt-2">{{ $title }}</h1>
     </div>
     @isset($actions)<div class="flex gap-2">{{ $actions }}</div>@endisset
 </div>

@@ -1,10 +1,13 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-200">
+<nav x-data="{ open: false }" class="bg-cream border-b-2 border-ink">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-14">
-            <div class="flex items-center">
-                <a href="{{ route('dashboard') }}" class="text-lg font-bold text-gray-800">Jira-lite</a>
+        <div class="flex justify-between items-center h-16">
 
-                <div class="hidden sm:flex ml-8 space-x-6">
+            <div class="flex items-center gap-8">
+                <a href="{{ route('dashboard') }}" class="text-2xl font-bold tracking-tight leading-none">
+                    Jira<span class="text-tomato">.</span>lite
+                </a>
+
+                <div class="hidden sm:flex items-center gap-1">
                     @php
                         $links = [
                             ['dashboard', route('dashboard'), 'Pulpit'],
@@ -17,49 +20,50 @@
                     @endphp
                     @foreach($links as [$pattern, $url, $label])
                         @php $active = request()->routeIs($pattern); @endphp
-                        <a href="{{ $url }}" class="inline-flex items-center text-sm border-b-2 {{ $active ? 'border-blue-500 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700' }}">
+                        <a href="{{ $url }}" class="px-3 py-1.5 text-sm font-semibold {{ $active ? 'bg-ink text-cream' : 'hover:bg-sun' }}">
                             {{ $label }}
                         </a>
                     @endforeach
                 </div>
             </div>
 
-            <div class="hidden sm:flex items-center">
+            <div class="hidden sm:flex items-center gap-3">
                 @php
                     $u = auth()->user();
-                    $roleLabel = ['admin'=>'administrator','manager'=>'manager','developer'=>'developer'][$u->role] ?? $u->role;
+                    $roleLabel = ['admin'=>'admin','manager'=>'manager','developer'=>'developer'][$u->role] ?? $u->role;
+                    $roleColor = ['admin'=>'#FF5C38','manager'=>'#3D5AFE','developer'=>'#A8E063'][$u->role] ?? '#FFD93D';
                 @endphp
+                <span class="pill" style="background:{{ $roleColor }};">{{ $roleLabel }}</span>
                 <div x-data="{ open: false }" class="relative">
-                    <button @click="open = !open" class="flex items-center text-sm text-gray-700 hover:text-gray-900">
+                    <button @click="open = !open" class="flex items-center gap-2 px-3 py-1.5 font-semibold text-sm border-2 border-ink bg-white hover:bg-sun" style="box-shadow: 3px 3px 0 0 #0A0A0A">
                         <span>{{ $u->name }}</span>
-                        <span class="text-xs text-gray-400 ml-2">({{ $roleLabel }})</span>
-                        <svg class="ml-1 h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
                     </button>
-                    <div x-show="open" @click.away="open = false" x-transition class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-50">
-                        <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profil</a>
-                        <form method="POST" action="{{ route('logout') }}" class="border-t border-gray-200">
+                    <div x-show="open" @click.away="open = false" x-transition class="absolute right-0 mt-2 w-52 bg-white border-2 border-ink z-50" style="box-shadow: 4px 4px 0 0 #0A0A0A">
+                        <a href="{{ route('profile.edit') }}" class="block px-4 py-2.5 text-sm font-medium hover:bg-sun border-b-2 border-ink">Profil</a>
+                        <form method="POST" action="{{ route('logout') }}">
                             @csrf
-                            <button class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Wyloguj</button>
+                            <button class="w-full text-left px-4 py-2.5 text-sm font-medium hover:bg-tomato hover:text-white">Wyloguj</button>
                         </form>
                     </div>
                 </div>
             </div>
 
-            <button @click="open = !open" class="sm:hidden text-gray-700">
-                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            <button @click="open = !open" class="sm:hidden">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="square" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"/></svg>
             </button>
         </div>
     </div>
 
-    <div x-show="open" x-transition class="sm:hidden border-t border-gray-200">
+    <div x-show="open" x-transition class="sm:hidden border-t-2 border-ink bg-white">
         <div class="px-4 py-3 space-y-2">
             @foreach($links as [$pattern, $url, $label])
-                <a href="{{ $url }}" class="block text-sm {{ request()->routeIs($pattern) ? 'text-blue-600' : 'text-gray-700' }}">{{ $label }}</a>
+                <a href="{{ $url }}" class="block px-3 py-1.5 text-sm font-semibold {{ request()->routeIs($pattern) ? 'bg-ink text-cream' : '' }}">{{ $label }}</a>
             @endforeach
-            <hr>
-            <a href="{{ route('profile.edit') }}" class="block text-sm text-gray-700">Profil</a>
+            <hr class="border-ink border-t-2">
+            <a href="{{ route('profile.edit') }}" class="block px-3 py-1.5 text-sm font-semibold">Profil</a>
             <form method="POST" action="{{ route('logout') }}">@csrf
-                <button class="text-sm text-gray-700">Wyloguj</button>
+                <button class="block px-3 py-1.5 text-sm font-semibold text-tomato">Wyloguj</button>
             </form>
         </div>
     </div>

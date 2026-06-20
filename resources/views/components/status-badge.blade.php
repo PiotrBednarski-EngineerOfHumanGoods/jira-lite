@@ -1,18 +1,20 @@
 @props(['status'])
 @php
     $map = [
-        'active'      => ['bg-green-100 text-green-700', 'aktywny'],
-        'on_hold'     => ['bg-yellow-100 text-yellow-700', 'wstrzymany'],
-        'archived'    => ['bg-gray-100 text-gray-600', 'archiwum'],
-        'todo'        => ['bg-gray-100 text-gray-700', 'do zrobienia'],
-        'in_progress' => ['bg-blue-100 text-blue-700', 'w toku'],
-        'review'      => ['bg-purple-100 text-purple-700', 'review'],
-        'done'        => ['bg-green-100 text-green-700', 'gotowe'],
-        'low'         => ['bg-gray-100 text-gray-600', 'niski'],
-        'medium'      => ['bg-blue-100 text-blue-700', 'średni'],
-        'high'        => ['bg-orange-100 text-orange-700', 'wysoki'],
-        'urgent'      => ['bg-red-100 text-red-700', 'pilny'],
+        'active'      => ['#A8E063', 'aktywny'],
+        'on_hold'     => ['#FFD93D', 'wstrzymany'],
+        'archived'    => ['#E5E5E5', 'archiwum'],
+        'todo'        => ['#FFFFFF', 'do zrobienia'],
+        'in_progress' => ['#3D5AFE', 'w toku', '#FFFFFF'],
+        'review'      => ['#FFD93D', 'review'],
+        'done'        => ['#A8E063', 'gotowe'],
+        'low'         => ['#E5E5E5', 'niski'],
+        'medium'      => ['#FFD93D', 'średni'],
+        'high'        => ['#FF5C38', 'wysoki', '#FFFFFF'],
+        'urgent'      => ['#0A0A0A', 'pilny', '#FF5C38'],
     ];
-    [$cls, $label] = $map[$status] ?? ['bg-gray-100 text-gray-700', $status];
+    $entry = $map[$status] ?? ['#FFFFFF', $status];
+    [$bg, $label] = [$entry[0], $entry[1]];
+    $fg = $entry[2] ?? '#0A0A0A';
 @endphp
-<span class="inline-block text-xs px-2 py-0.5 rounded {{ $cls }}">{{ $label }}</span>
+<span class="pill" style="background:{{ $bg }}; color:{{ $fg }};">{{ $label }}</span>

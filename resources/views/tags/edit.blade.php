@@ -1,23 +1,26 @@
 <x-app-layout>
-    <x-slot name="header"><h2 class="text-xl font-semibold text-slate-800">Edytuj tag</h2></x-slot>
+    <x-slot name="header">
+        <span class="eyebrow">/ edycja tagu</span>
+        <h2 class="text-3xl font-bold tracking-tight leading-none mt-2">#{{ $tag->name }}</h2>
+    </x-slot>
 
-    <div class="max-w-md mx-auto py-6 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <x-flash />
-        <form method="POST" action="{{ route('tags.update', $tag) }}" class="bg-white p-6 rounded shadow-sm border border-slate-200 space-y-4">
+        <form method="POST" action="{{ route('tags.update', $tag) }}" class="card p-5 space-y-4">
             @csrf @method('PUT')
             <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">Nazwa *</label>
+                <x-input-label value="Nazwa *" />
                 <input type="text" name="name" value="{{ old('name', $tag->name) }}" required minlength="2" maxlength="30"
-                       class="w-full border border-slate-300 rounded px-3 py-2 text-sm @error('name') border-red-500 @enderror">
-                @error('name')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
+                       class="input @error('name') border-tomato @enderror">
+                @error('name')<p class="mono text-xs font-bold text-tomato mt-1.5">— {{ $message }}</p>@enderror
             </div>
             <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">Kolor *</label>
-                <input type="color" name="color" value="{{ old('color', $tag->color) }}" class="h-10 w-20 border border-slate-300 rounded">
+                <x-input-label value="Kolor *" />
+                <input type="color" name="color" value="{{ old('color', $tag->color) }}" class="h-12 w-24 border-2 border-ink cursor-pointer">
             </div>
-            <div class="flex justify-end gap-2 pt-2">
-                <a href="{{ route('tags.index') }}" class="px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 rounded">Anuluj</a>
-                <button class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm rounded">Zapisz</button>
+            <div class="flex justify-end gap-3 pt-3 border-t-2 border-ink">
+                <a href="{{ route('tags.index') }}" class="btn">Anuluj</a>
+                <button class="btn btn-primary">Zapisz &rarr;</button>
             </div>
         </form>
     </div>

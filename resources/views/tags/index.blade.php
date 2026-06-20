@@ -1,43 +1,43 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <h2 class="text-xl font-semibold text-slate-800">Tagi</h2>
-            <a href="{{ route('tags.create') }}" class="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-sm rounded">+ Nowy tag</a>
+        <div class="flex items-end justify-between gap-4">
+            <div>
+                <span class="eyebrow">/ tagi</span>
+                <h2 class="text-4xl font-bold tracking-tight leading-none mt-2">Tagi</h2>
+            </div>
+            <a href="{{ route('tags.create') }}" class="btn btn-accent">+ Nowy tag</a>
         </div>
     </x-slot>
 
-    <div class="max-w-3xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-3xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <x-flash />
 
-        <div class="bg-white shadow-sm rounded border border-slate-200 overflow-x-auto">
-            <table class="w-full">
-                <thead class="bg-slate-50 border-b border-slate-200">
-                    <tr>
-                        <th class="px-4 py-2 text-left text-xs font-medium text-slate-600 uppercase">Nazwa</th>
-                        <th class="px-4 py-2 text-left text-xs font-medium text-slate-600 uppercase">Kolor</th>
-                        <th class="px-4 py-2 text-left text-xs font-medium text-slate-600 uppercase">Użyć</th>
-                        <th></th>
-                    </tr>
+        <div class="card-flat overflow-x-auto" style="box-shadow: 4px 4px 0 0 #0A0A0A;">
+            <table class="brutal">
+                <thead>
+                    <tr><th>Nazwa</th><th>Kolor</th><th>Użyć</th><th></th></tr>
                 </thead>
-                <tbody class="divide-y divide-slate-100">
+                <tbody>
                     @forelse($tags as $tag)
                         <tr>
-                            <td class="px-4 py-3 flex items-center gap-2">
-                                <span class="inline-block h-3 w-3 rounded-full" style="background-color: {{ $tag->color }};"></span>
-                                <span>#{{ $tag->name }}</span>
+                            <td>
+                                <div class="flex items-center gap-2">
+                                    <span class="inline-block h-4 w-4 border-2 border-ink" style="background-color: {{ $tag->color }};"></span>
+                                    <span class="font-bold">#{{ $tag->name }}</span>
+                                </div>
                             </td>
-                            <td class="px-4 py-3 text-sm text-slate-600 font-mono">{{ $tag->color }}</td>
-                            <td class="px-4 py-3 text-sm">{{ $tag->tasks_count }}</td>
-                            <td class="px-4 py-3 text-right space-x-3">
-                                <a href="{{ route('tags.edit', $tag) }}" class="text-sm text-blue-600 hover:underline">edytuj</a>
+                            <td class="mono text-sm">{{ $tag->color }}</td>
+                            <td class="mono font-bold">{{ $tag->tasks_count }}</td>
+                            <td class="text-right">
+                                <a href="{{ route('tags.edit', $tag) }}" class="link font-bold mr-3">edytuj</a>
                                 <form method="POST" action="{{ route('tags.destroy', $tag) }}" class="inline" onsubmit="return confirm('Usunąć tag „{{ $tag->name }}”?')">
                                     @csrf @method('DELETE')
-                                    <button class="text-sm text-red-600 hover:underline">usuń</button>
+                                    <button class="font-bold text-tomato hover:bg-tomato hover:text-white px-2">usuń</button>
                                 </form>
                             </td>
                         </tr>
                     @empty
-                        <tr><td colspan="4" class="px-4 py-8 text-center text-sm text-slate-400">Brak tagów.</td></tr>
+                        <tr><td colspan="4" class="text-center py-10 opacity-50">Brak tagów.</td></tr>
                     @endforelse
                 </tbody>
             </table>

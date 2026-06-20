@@ -1,117 +1,127 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="text-xl font-semibold text-gray-800">Pulpit</h2>
+        <div class="flex items-end justify-between gap-4">
+            <div>
+                <span class="eyebrow mb-2">/ {{ now()->locale('pl')->translatedFormat('l · j F') }}</span>
+                <h2 class="text-4xl font-bold tracking-tight leading-none mt-2">Pulpit</h2>
+            </div>
+            <span class="pill" style="background:#3D5AFE; color:#fff">{{ auth()->user()->name }}</span>
+        </div>
     </x-slot>
 
-    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <x-flash />
 
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
             @php
                 $cards = [
-                    ['Projekty', $stats['projects_total'], 'aktywne: '.$stats['projects_active']],
-                    ['Zadania', $stats['tasks_total'], 'gotowe: '.$stats['tasks_done']],
-                    ['W toku', $stats['tasks_in_progress'], 'do zrobienia: '.$stats['tasks_todo']],
-                    ['Moje zadania', $stats['my_tasks'], 'przypisane do mnie'],
+                    ['Projekty', $stats['projects_total'], 'aktywne: '.$stats['projects_active'], '#FFFFFF'],
+                    ['Zadania', $stats['tasks_total'], 'gotowe: '.$stats['tasks_done'], '#A8E063'],
+                    ['W toku', $stats['tasks_in_progress'], 'do zrobienia: '.$stats['tasks_todo'], '#3D5AFE'],
+                    ['Moje', $stats['my_tasks'], 'przypisane do mnie', '#FFD93D'],
                 ];
             @endphp
-            @foreach($cards as [$label, $value, $sub])
-                <div class="bg-white p-4 rounded shadow-sm border border-gray-200">
-                    <div class="text-xs text-gray-500 uppercase">{{ $label }}</div>
-                    <div class="text-2xl font-bold text-gray-800 mt-1">{{ $value }}</div>
-                    <div class="text-xs text-gray-400 mt-1">{{ $sub }}</div>
+            @foreach($cards as [$label, $value, $sub, $bg])
+                <div class="card p-4" style="background:{{ $bg }};">
+                    <div class="mono text-xs font-bold uppercase tracking-wider">{{ $label }}</div>
+                    <div class="text-5xl font-bold mt-2 leading-none">{{ $value }}</div>
+                    <div class="mono text-xs mt-2 opacity-70">{{ $sub }}</div>
                 </div>
             @endforeach
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
-            <div class="bg-white p-4 rounded shadow-sm border border-gray-200">
-                <h3 class="font-semibold text-gray-700 mb-3">Zadania wg statusu</h3>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
+            <div class="card p-5">
+                <h3 class="font-bold text-lg uppercase tracking-tight mb-4 border-b-2 border-ink pb-2">Wg statusu</h3>
                 @foreach(\App\Models\Task::STATUSES as $st)
                     @php
                         $count = $tasksByStatus[$st] ?? 0;
                         $total = max(array_sum($tasksByStatus), 1);
                         $pct = round($count * 100 / $total);
                     @endphp
-                    <div class="mb-2">
+                    <div class="mb-3">
                         <div class="flex justify-between text-xs mb-1">
-                            <span class="text-gray-600">{{ $st }}</span>
-                            <span class="font-medium">{{ $count }}</span>
+                            <x-status-badge :status="$st" />
+                            <span class="mono font-bold">{{ $count }} ({{ $pct }}%)</span>
                         </div>
-                        <div class="h-2 bg-gray-100 rounded">
-                            <div class="h-2 bg-blue-500 rounded" style="width: {{ $pct }}%"></div>
+                        <div class="h-3 border-2 border-ink bg-cream">
+                            <div class="h-full bg-cobalt border-r-2 border-ink" style="width: {{ $pct }}%"></div>
                         </div>
                     </div>
                 @endforeach
             </div>
 
-            <div class="bg-white p-4 rounded shadow-sm border border-gray-200">
-                <h3 class="font-semibold text-gray-700 mb-3">Wg priorytetu</h3>
+            <div class="card p-5">
+                <h3 class="font-bold text-lg uppercase tracking-tight mb-4 border-b-2 border-ink pb-2">Wg priorytetu</h3>
                 @foreach(\App\Models\Task::PRIORITIES as $p)
                     @php
                         $count = $tasksByPriority[$p] ?? 0;
                         $total = max(array_sum($tasksByPriority), 1);
                         $pct = round($count * 100 / $total);
                     @endphp
-                    <div class="mb-2">
+                    <div class="mb-3">
                         <div class="flex justify-between text-xs mb-1">
-                            <span class="text-gray-600">{{ $p }}</span>
-                            <span class="font-medium">{{ $count }}</span>
+                            <x-status-badge :status="$p" />
+                            <span class="mono font-bold">{{ $count }} ({{ $pct }}%)</span>
                         </div>
-                        <div class="h-2 bg-gray-100 rounded">
-                            <div class="h-2 bg-orange-500 rounded" style="width: {{ $pct }}%"></div>
+                        <div class="h-3 border-2 border-ink bg-cream">
+                            <div class="h-full bg-tomato border-r-2 border-ink" style="width: {{ $pct }}%"></div>
                         </div>
                     </div>
                 @endforeach
             </div>
 
-            <div class="bg-white p-4 rounded shadow-sm border border-gray-200">
-                <h3 class="font-semibold text-gray-700 mb-3">Nadchodzące terminy</h3>
+            <div class="card p-5">
+                <h3 class="font-bold text-lg uppercase tracking-tight mb-4 border-b-2 border-ink pb-2">Nadchodzące</h3>
                 @forelse($upcoming as $task)
-                    <div class="py-2 border-b border-gray-100 last:border-0">
-                        <a href="{{ route('tasks.show', $task) }}" class="text-sm text-gray-800 hover:text-blue-600 block">{{ $task->title }}</a>
-                        <div class="flex justify-between text-xs text-gray-500 mt-0.5">
-                            <span>{{ $task->project->name }}</span>
-                            <span>{{ $task->due_date->format('d.m.Y') }}</span>
+                    <div class="py-2 border-b-2 border-ink last:border-0">
+                        <a href="{{ route('tasks.show', $task) }}" class="text-sm font-semibold hover:bg-sun block">{{ $task->title }}</a>
+                        <div class="flex justify-between mono text-xs mt-1">
+                            <span class="opacity-60">{{ $task->project->name }}</span>
+                            <span class="font-bold">{{ $task->due_date->format('d.m') }}</span>
                         </div>
                     </div>
                 @empty
-                    <p class="text-sm text-gray-400">Brak terminów.</p>
+                    <p class="text-sm opacity-60">Brak terminów.</p>
                 @endforelse
             </div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <div class="bg-white p-4 rounded shadow-sm border border-gray-200">
-                <h3 class="font-semibold text-gray-700 mb-3">Moje aktywne zadania</h3>
+            <div class="card p-5">
+                <h3 class="font-bold text-lg uppercase tracking-tight mb-4 border-b-2 border-ink pb-2">Moje aktywne zadania</h3>
                 @forelse($myAssigned as $task)
-                    <div class="py-2 border-b border-gray-100 last:border-0 flex items-center justify-between">
+                    <div class="py-3 border-b-2 border-ink last:border-0 flex items-center justify-between gap-3">
                         <div class="min-w-0">
-                            <a href="{{ route('tasks.show', $task) }}" class="text-sm text-gray-800 hover:text-blue-600">{{ $task->title }}</a>
-                            <div class="text-xs text-gray-500">{{ $task->project->name }}</div>
+                            <a href="{{ route('tasks.show', $task) }}" class="text-sm font-semibold hover:bg-sun">{{ $task->title }}</a>
+                            <div class="mono text-xs opacity-60 mt-1">{{ $task->project->name }}</div>
                         </div>
-                        <x-status-badge :status="$task->status" />
+                        <div class="flex gap-1 shrink-0">
+                            <x-status-badge :status="$task->status" />
+                        </div>
                     </div>
                 @empty
-                    <p class="text-sm text-gray-400">Nie masz przypisanych zadań.</p>
+                    <p class="text-sm opacity-60">Brak przypisanych zadań.</p>
                 @endforelse
             </div>
 
-            <div class="bg-white p-4 rounded shadow-sm border border-gray-200">
-                <h3 class="font-semibold text-gray-700 mb-3">Ostatnia aktywność</h3>
+            <div class="card p-5">
+                <h3 class="font-bold text-lg uppercase tracking-tight mb-4 border-b-2 border-ink pb-2">Ostatnia aktywność</h3>
                 @php $actionMap = ['created' => 'utworzył', 'updated' => 'zmienił', 'deleted' => 'usunął'];
                      $typeMap = ['Project' => 'projekt', 'Task' => 'zadanie']; @endphp
-                <div class="max-h-72 overflow-y-auto">
+                <div class="max-h-72 overflow-y-auto -mx-1 px-1">
                     @forelse($recentActivity as $log)
-                        <div class="py-1.5 border-b border-gray-100 last:border-0 text-xs">
-                            <span class="font-medium">{{ $log->user?->name ?? 'system' }}</span>
-                            {{ $actionMap[$log->action] ?? $log->action }}
-                            {{ $typeMap[class_basename($log->auditable_type)] ?? class_basename($log->auditable_type) }}
-                            #{{ $log->auditable_id }}
-                            <span class="text-gray-400 float-right">{{ $log->created_at->diffForHumans() }}</span>
+                        <div class="py-1.5 border-b-2 border-ink last:border-0 text-xs flex justify-between gap-2">
+                            <span>
+                                <span class="font-bold">{{ $log->user?->name ?? 'system' }}</span>
+                                {{ $actionMap[$log->action] ?? $log->action }}
+                                <span class="font-semibold">{{ $typeMap[class_basename($log->auditable_type)] ?? '' }}</span>
+                                <span class="mono opacity-60">#{{ $log->auditable_id }}</span>
+                            </span>
+                            <span class="mono opacity-50 shrink-0">{{ $log->created_at->diffForHumans() }}</span>
                         </div>
                     @empty
-                        <p class="text-sm text-gray-400">Brak aktywności.</p>
+                        <p class="text-sm opacity-60">Brak aktywności.</p>
                     @endforelse
                 </div>
             </div>
