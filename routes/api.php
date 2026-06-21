@@ -4,7 +4,7 @@ use App\Http\Controllers\Api\ProjectApiController;
 use App\Http\Controllers\Api\TaskApiController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['web', 'auth'])->group(function () {
     Route::get('projects', [ProjectApiController::class, 'index']);
     Route::get('projects/{project}', [ProjectApiController::class, 'show']);
     Route::get('tasks', [TaskApiController::class, 'index']);
