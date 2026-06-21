@@ -39,7 +39,7 @@
                         <span>{{ $u->name }}</span>
                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
                     </button>
-                    <div x-show="open" @click.away="open = false" x-transition class="absolute right-0 mt-2 w-52 bg-white border-2 border-ink z-50" style="box-shadow: 4px 4px 0 0 #0A0A0A">
+                    <div x-show="open" x-cloak @click.away="open = false" x-transition class="absolute right-0 mt-2 w-52 bg-white border-2 border-ink z-50" style="box-shadow: 4px 4px 0 0 #0A0A0A">
                         <a href="{{ route('profile.edit') }}" class="block px-4 py-2.5 text-sm font-medium hover:bg-sun border-b-2 border-ink">Profil</a>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
@@ -55,7 +55,7 @@
         </div>
     </div>
 
-    <div x-show="open" x-transition class="sm:hidden border-t-2 border-ink bg-white">
+    <div x-show="open" x-cloak x-transition class="sm:hidden border-t-2 border-ink bg-white">
         <div class="px-4 py-3 space-y-2">
             @foreach($links as [$pattern, $url, $label])
                 <a href="{{ $url }}" class="block px-3 py-1.5 text-sm font-semibold {{ request()->routeIs($pattern) ? 'bg-ink text-cream' : '' }}">{{ $label }}</a>

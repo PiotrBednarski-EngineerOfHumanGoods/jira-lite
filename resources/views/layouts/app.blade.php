@@ -38,6 +38,7 @@
         }
     </script>
     <style>
+        [x-cloak] { display: none !important; }
         body { font-family: 'Space Grotesk', system-ui, sans-serif; background: #FFFBEB; color: #0A0A0A; -webkit-font-smoothing: antialiased; }
         .mono { font-family: 'JetBrains Mono', monospace; }
 
